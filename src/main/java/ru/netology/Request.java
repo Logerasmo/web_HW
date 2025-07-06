@@ -12,15 +12,17 @@ public class Request {
     private final String[] requestLine;
     private final List<String> headers;
     private String body;
-    private final URLEncodedUtils urlEncodedUtils = new URLEncodedUtils();
+    private final List<NameValuePair> queryParams;
     public Request(String[] requestLine, List<String> headers, String body){
         this.requestLine = requestLine;
         this.headers = headers;
         this.body = body;
+        this.queryParams = URLEncodedUtils.parse(requestLine[1], StandardCharsets.UTF_8);
     }
     public Request(String[] requestLine, List<String> headers){
         this.requestLine = requestLine;
         this.headers = headers;
+        this.queryParams = URLEncodedUtils.parse(requestLine[1], StandardCharsets.UTF_8);
     }
     public String[] getRequestLine() {
         return requestLine;
@@ -34,9 +36,9 @@ public class Request {
         return headers;
     }
     public List<NameValuePair> getQueryParam(String name){
-        return URLEncodedUtils.parse(requestLine[1], StandardCharsets.UTF_8).stream().filter(x -> x.getName().equals(name)).collect(Collectors.toList());
+        return queryParams.stream().filter(x -> x.getName().equals(name)).collect(Collectors.toList());
     }
     public List<NameValuePair> getQueryParams(){
-        return URLEncodedUtils.parse(requestLine[1], StandardCharsets.UTF_8);
+        return queryParams;
     }
 }
